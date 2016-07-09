@@ -3,7 +3,7 @@ defmodule Scrivener.Headers.Mixfile do
 
   def project do
     [app: :scrivener_headers,
-     version: "1.0.1",
+     version: "2.0.0",
      elixir: "~> 1.2",
      package: package,
      description: """

@@ -12,8 +12,6 @@
 [hexdocs]: https://hexdocs.pm/scrivener_headers/Scrivener.Headers.html
 
 
-
-
 Helpers for paginating API responses with [Scrivener](https://github.com/drewolson/scrivener) and HTTP headers.  Implements [RFC-5988](https://mnot.github.io/I-D/rfc5988bis/), the proposed standard for Web linking.
 
 ## Setup
@@ -24,7 +22,7 @@ Add to `mix.exs`:
   defp deps do
     [
       # ...
-      {:scrivener_headers, "~> 1.0"}
+      {:scrivener_headers, "~> 2.0"}
       # ...
     ]
   end
