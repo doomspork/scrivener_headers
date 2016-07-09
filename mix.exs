@@ -27,8 +27,8 @@ defmodule Scrivener.Headers.Mixfile do
 
   defp deps do
     [{:plug, "~> 1.1", optional: true},
-     {:scrivener, "~> 1.1"},
-     {:earmark, "~> 0.1", only: :dev},
-     {:ex_doc, "~> 0.11", only: :dev}]
+     {:scrivener, "~> 2.0"},
+     {:earmark, "~> 1.0", only: :dev},
+     {:ex_doc, ">= 0.2.0", only: :dev}]
   end
 end
