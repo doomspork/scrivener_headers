@@ -54,19 +54,17 @@ defmodule Scrivener.Headers do
     ~s(<#{uri_str}>; rel="#{rel}")
   end
 
-  defp maybe_add_prev(links, uri, page_number, total_pages) do
-    if 1 < page_number and page_number <= total_pages do
-      [link_str(uri, page_number - 1, "prev") | links]
-    else
-      links
-    end
+  defp maybe_add_prev(links, uri, page_number, total_pages) when 1 < page_number and page_number <= total_pages do
+    [link_str(uri, page_number - 1, "prev") | links]
+  end
+  defp maybe_add_prev(links, _uri, _page_number, _total_pages) do
+    links
   end
 
-  defp maybe_add_next(links, uri, page_number, total_pages) do
-    if 1 <= page_number and page_number < total_pages do
-      [link_str(uri, page_number + 1, "next") | links]
-    else
-      links
-    end
+  defp maybe_add_next(links, uri, page_number, total_pages) when 1 <= page_number and page_number < total_pages do
+    [link_str(uri, page_number + 1, "next") | links]
+  end
+  defp maybe_add_next(links, _uri, _page_number, _total_pages) do
+    links
   end
 end
