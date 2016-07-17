@@ -45,12 +45,14 @@ defmodule Scrivener.Headers do
   end
 
   defp link_str(%{query: req_query} = uri, page_number, rel) do
-    query = req_query
-            |> URI.decode_query()
-            |> Map.put("page", page_number)
-            |> URI.encode_query()
-    uri_str = %URI{uri | query: query}
-              |> URI.to_string()
+    query =
+      req_query
+      |> URI.decode_query()
+      |> Map.put("page", page_number)
+      |> URI.encode_query()
+    uri_str =
+      %URI{uri | query: query}
+      |> URI.to_string()
     ~s(<#{uri_str}>; rel="#{rel}")
   end
 
