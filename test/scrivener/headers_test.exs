@@ -22,7 +22,11 @@ defmodule Scrivener.HeadersTests do
 
     assert headers["total"] == "50"
     assert headers["per-page"] == "10"
-    assert headers["link"] == ~s(<http://www.example.com/test?foo=bar&page=1>; rel="first", <http://www.example.com/test?foo=bar&page=5>; rel="last", <http://www.example.com/test?foo=bar&page=4>; rel="next", <http://www.example.com/test?foo=bar&page=2>; rel="prev")
+    links = String.split(headers["link"], ", ")
+    assert ~s(<http://www.example.com/test?foo=bar&page=1>; rel="first") in links
+    assert ~s(<http://www.example.com/test?foo=bar&page=5>; rel="last") in links
+    assert ~s(<http://www.example.com/test?foo=bar&page=4>; rel="next") in links
+    assert ~s(<http://www.example.com/test?foo=bar&page=2>; rel="prev") in links
   end
 
   test "doesn't include prev link for first page" do
