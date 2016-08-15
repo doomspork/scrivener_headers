@@ -1,9 +1,11 @@
 defmodule Scrivener.Headers.Mixfile do
   use Mix.Project
 
+  @version "2.1.0"
+
   def project do
     [app: :scrivener_headers,
-     version: "2.0.0",
+     version: @version,
      elixir: "~> 1.2",
      package: package,
      description: """
