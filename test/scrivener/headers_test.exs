@@ -22,6 +22,8 @@ defmodule Scrivener.HeadersTests do
 
     assert headers["total"] == "50"
     assert headers["per-page"] == "10"
+    assert headers["total-pages"] == "5"
+    assert headers["page-number"] == "3"
     links = String.split(headers["link"], ", ")
     assert ~s(<http://www.example.com/test?foo=bar&page=1>; rel="first") in links
     assert ~s(<http://www.example.com/test?foo=bar&page=5>; rel="last") in links

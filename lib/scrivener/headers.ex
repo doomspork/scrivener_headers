@@ -33,6 +33,8 @@ defmodule Scrivener.Headers do
     |> put_resp_header("link", build_link_header(uri, page))
     |> put_resp_header("total", Integer.to_string(page.total_entries))
     |> put_resp_header("per-page", Integer.to_string(page.page_size))
+    |> put_resp_header("total-pages", Integer.to_string(page.total_pages))
+    |> put_resp_header("page-number", Integer.to_string(page.page_number))
   end
 
   @spec build_link_header(URI.t, Scrivener.Page.t) :: String.t
