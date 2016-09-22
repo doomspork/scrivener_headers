@@ -22,7 +22,7 @@ Add to `mix.exs`:
   defp deps do
     [
       # ...
-      {:scrivener_headers, "~> 2.0"}
+      {:scrivener_headers, "~> 3.0"}
       # ...
     ]
   end
