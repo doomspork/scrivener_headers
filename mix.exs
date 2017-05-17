@@ -7,13 +7,13 @@ defmodule Scrivener.Headers.Mixfile do
     [app: :scrivener_headers,
      version: @version,
      elixir: "~> 1.3",
-     package: package,
+     package: package(),
      description: """
      Helpers for paginating API responses with Scrivener and HTTP headers
      """,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps()]
   end
 
   def package do
