@@ -1,12 +1,12 @@
 defmodule Scrivener.Headers.Mixfile do
   use Mix.Project
 
-  @version "3.0.0"
+  @version "3.1.0"
 
   def project do
     [app: :scrivener_headers,
      version: @version,
-     elixir: "~> 1.3",
+     elixir: "~> 1.4",
      package: package(),
      description: """
      Helpers for paginating API responses with Scrivener and HTTP headers
@@ -28,8 +28,8 @@ defmodule Scrivener.Headers.Mixfile do
   end
 
   defp deps do
-    [{:plug, "~> 1.2", optional: true},
-     {:scrivener, "~> 2.1"},
-     {:ex_doc, "~> 0.13.0", only: :dev}]
+    [{:plug, "~> 1.3", optional: true},
+     {:scrivener, "~> 2.3"},
+     {:ex_doc, "~> 0.15", only: :dev}]
   end
 end
