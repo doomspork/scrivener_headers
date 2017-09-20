@@ -28,8 +28,13 @@ defmodule Scrivener.Headers.Mixfile do
   end
 
   defp deps do
-    [{:plug, "~> 1.3", optional: true},
-     {:scrivener, "~> 2.3"},
-     {:ex_doc, "~> 0.15", only: :dev}]
+    [
+      {:plug, "~> 1.3", optional: true},
+      {:scrivener, "~> 2.3"},
+
+      {:credo, "~> 0.8.6", only: [:dev, :test]},
+      {:ex_doc, "~> 0.15", only: :dev}
+    ]
+
   end
 end
