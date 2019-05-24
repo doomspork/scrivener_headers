@@ -19,22 +19,39 @@ defmodule Scrivener.Headers do
 
   import Plug.Conn, only: [put_resp_header: 3]
 
+  @default_header_names %{
+    link: "link",
+    total: "total",
+    per_page: "per-page",
+    total_pages: "total-pages",
+    page_number: "page-number"
+  }
+
   @doc """
   Add HTTP headers for a `Scrivener.Page`.
   """
-  @spec paginate(Plug.Conn.t, Scrivener.Page.t) :: Plug.Conn.t
-  def paginate(conn, page) do
+  @spec paginate(Plug.Conn.t, Scrivener.Page.t, Keyword.t) :: Plug.Conn.t
+  def paginate(conn, page, opts \\ []) do
     uri = %URI{scheme: Atom.to_string(conn.scheme),
                host: conn.host,
                port: conn.port,
                path: conn.request_path,
                query: conn.query_string}
+
+    %{
+      link: link,
+      total: total,
+      per_page: per_page,
+      total_pages: total_pages,
+      page_number: page_number
+    } = Map.merge(@default_header_names, Map.new(Keyword.get(opts, :headers, [])))
+
     conn
-    |> put_resp_header("link", build_link_header(uri, page))
-    |> put_resp_header("total", Integer.to_string(page.total_entries))
-    |> put_resp_header("per-page", Integer.to_string(page.page_size))
-    |> put_resp_header("total-pages", Integer.to_string(page.total_pages))
-    |> put_resp_header("page-number", Integer.to_string(page.page_number))
+    |> put_resp_header(link, build_link_header(uri, page))
+    |> put_resp_header(total, Integer.to_string(page.total_entries))
+    |> put_resp_header(per_page, Integer.to_string(page.page_size))
+    |> put_resp_header(total_pages, Integer.to_string(page.total_pages))
+    |> put_resp_header(page_number, Integer.to_string(page.page_number))
   end
 
   @spec build_link_header(URI.t, Scrivener.Page.t) :: String.t
