@@ -12,7 +12,7 @@
 [hexdocs]: https://hexdocs.pm/scrivener_headers/Scrivener.Headers.html
 
 
-Helpers for paginating API responses with [Scrivener](https://github.com/drewolson/scrivener) and HTTP headers.  Implements [RFC-5988](https://mnot.github.io/I-D/rfc5988bis/), the proposed standard for Web linking.
+Helpers for paginating API responses with [Scrivener](https://github.com/drewolson/scrivener) and HTTP headers.  Implements [RFC-5988](https://tools.ietf.org/html/rfc5988), the proposed standard for Web linking.
 
 ## Setup
 
