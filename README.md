@@ -57,6 +57,44 @@ Link: <http://localhost:4000/people?page=1>; rel="first",
   <http://localhost:4000/people?page=4>; rel="prev"
 Total: 300
 Per-Page: 10
+
+```
+
+Also it is possible to use custom header names:
+
+```elixir
+def index(conn, params) do
+  page = MyApp.Person
+         |> where([p], p.age > 30)
+         |> order_by([p], desc: p.age)
+         |> preload(:friends)
+         |> MyApp.Repo.paginate(params, pagination_headers())
+
+  conn
+  |> Scrivener.Headers.paginate(page)
+  |> render("index.json", people: page.entries)
+end
+
+defp pagination_headers, do: Application.get_env(:your_app, :pagination_headers)
+```
+
+We can override just the headers we want:
+
+```elixir
+config :your_app, :pagination_headers,
+    link: "x-link",
+    total: "x-total"
+```
+
+Or override all of them:
+
+```elixir
+config :your_app, :pagination_headers,
+    link: "x-link",
+    total: "x-total",
+    per_page: "x-per-page",
+    total_pages: "x-total-pages",
+    page_number: "x-page-number"
 ```
 
 ## Contributing
