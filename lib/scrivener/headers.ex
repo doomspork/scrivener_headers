@@ -17,18 +17,41 @@ defmodule Scrivener.Headers do
       end
   """
 
-  import Plug.Conn, only: [put_resp_header: 3]
+  import Plug.Conn, only: [put_resp_header: 3, get_req_header: 2]
 
   @doc """
   Add HTTP headers for a `Scrivener.Page`.
   """
-  @spec paginate(Plug.Conn.t, Scrivener.Page.t) :: Plug.Conn.t
-  def paginate(conn, page) do
-    uri = %URI{scheme: Atom.to_string(conn.scheme),
-               host: conn.host,
-               port: conn.port,
-               path: conn.request_path,
-               query: conn.query_string}
+  @spec paginate(Plug.Conn.t(), Scrivener.Page.t(), opts :: keyword()) :: Plug.Conn.t()
+  def paginate(conn, page, opts \\ [])
+
+  def paginate(conn, page, opts) do
+    use_x_forwarded = Keyword.get(opts, :use_x_forwarded, false)
+    uri = generate_uri(conn, use_x_forwarded)
+    do_paginate(conn, page, uri)
+  end
+
+  defp generate_uri(conn, true) do
+    %URI{
+      scheme: get_x_forwarded_or_conn(conn, :scheme, "proto", &Atom.to_string/1),
+      host: get_x_forwarded_or_conn(conn, :host, "host"),
+      port: get_x_forwarded_or_conn(conn, :port, "port", & &1, &String.to_integer/1),
+      path: conn.request_path,
+      query: conn.query_string
+    }
+  end
+
+  defp generate_uri(conn, false) do
+    %URI{
+      scheme: Atom.to_string(conn.scheme),
+      host: conn.host,
+      port: conn.port,
+      path: conn.request_path,
+      query: conn.query_string
+    }
+  end
+
+  defp do_paginate(conn, page, uri) do
     conn
     |> put_resp_header("link", build_link_header(uri, page))
     |> put_resp_header("total", Integer.to_string(page.total_entries))
@@ -37,10 +60,16 @@ defmodule Scrivener.Headers do
     |> put_resp_header("page-number", Integer.to_string(page.page_number))
   end
 
-  @spec build_link_header(URI.t, Scrivener.Page.t) :: String.t
+  defp get_x_forwarded_or_conn(conn, conn_prop, header_name, parse_conn \\ & &1, parse_header \\ & &1) do
+    case get_req_header(conn, "x-forwarded-#{header_name}") do
+      [] -> conn |> Map.get(conn_prop) |> parse_conn.()
+      [value | _] -> parse_header.(value)
+    end
+  end
+
+  @spec build_link_header(URI.t(), Scrivener.Page.t()) :: String.t()
   defp build_link_header(uri, page) do
-    [link_str(uri, 1, "first"),
-     link_str(uri, page.total_pages, "last")]
+    [link_str(uri, 1, "first"), link_str(uri, page.total_pages, "last")]
     |> maybe_add_prev(uri, page.page_number, page.total_pages)
     |> maybe_add_next(uri, page.page_number, page.total_pages)
     |> Enum.join(", ")
@@ -52,15 +81,18 @@ defmodule Scrivener.Headers do
       |> URI.decode_query()
       |> Map.put("page", page_number)
       |> URI.encode_query()
+
     uri_str =
       %URI{uri | query: query}
       |> URI.to_string()
+
     ~s(<#{uri_str}>; rel="#{rel}")
   end
 
   defp maybe_add_prev(links, uri, page_number, total_pages) when 1 < page_number and page_number <= total_pages do
     [link_str(uri, page_number - 1, "prev") | links]
   end
+
   defp maybe_add_prev(links, _uri, _page_number, _total_pages) do
     links
   end
@@ -68,6 +100,7 @@ defmodule Scrivener.Headers do
   defp maybe_add_next(links, uri, page_number, total_pages) when 1 <= page_number and page_number < total_pages do
     [link_str(uri, page_number + 1, "next") | links]
   end
+
   defp maybe_add_next(links, _uri, _page_number, _total_pages) do
     links
   end
