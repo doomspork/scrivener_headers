@@ -4,13 +4,17 @@ defmodule Scrivener.HeadersTests do
   alias Plug.Conn
   alias Scrivener.{Headers, Page}
 
-  defp paginated_headers(page, port \\ 80) do
-    conn = %Conn{host: "www.example.com",
-                 port: port,
-                 query_string: "foo=bar",
-                 request_path: "/test",
-                 scheme: :http}
-            |> Headers.paginate(page)
+  defp paginated_headers(page, port \\ 80, opts \\ [], headers \\ []) do
+    conn =
+      %Conn{
+        host: "www.example.com",
+        port: port,
+        query_string: "foo=bar",
+        request_path: "/test",
+        scheme: :http,
+        req_headers: headers
+      }
+      |> Headers.paginate(page, opts)
 
     conn.resp_headers
     |> Enum.into(%{})
@@ -50,5 +54,18 @@ defmodule Scrivener.HeadersTests do
     headers = paginated_headers(page, 1337)
 
     assert headers["link"] =~ ~s(<http://www.example.com:1337/test?foo=bar&page=1>)
+  end
+
+  test "shows links build from x-forwarded headers" do
+    page = %Page{page_number: 5, page_size: 10, total_pages: 5, total_entries: 50}
+
+    headers =
+      paginated_headers(page, 80, [use_x_forwarded: true], [
+        {"x-forwarded-proto", "https"},
+        {"x-forwarded-host", "example.org"},
+        {"x-forwarded-port", "8000"}
+      ])
+
+    assert headers["link"] =~ ~s(<https://example.org:8000/test?foo=bar&page=1>)
   end
 end
