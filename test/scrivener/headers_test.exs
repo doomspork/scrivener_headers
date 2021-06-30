@@ -56,6 +56,41 @@ defmodule Scrivener.HeadersTests do
     assert headers["link"] =~ ~s(<http://www.example.com:1337/test?foo=bar&page=1>)
   end
 
+  test "updates the keys used with the pagination headers" do
+    page = %Page{page_number: 5, page_size: 10, total_pages: 5, total_entries: 50}
+
+    header_keys =
+      paginated_headers(page, 80,
+        header_names: [
+          total: "total_items",
+          link: "link_url",
+          per_page: "per_page",
+          total_pages: "total_pages",
+          page_number: "page_number"
+        ]
+      )
+
+    assert Enum.all?(
+             ["link_url", "page_number", "per_page", "total_items", "total_pages"],
+             &Map.has_key?(header_keys, &1)
+           )
+  end
+
+  test "updates a single key used with the pagination headers" do
+    page = %Page{page_number: 5, page_size: 10, total_pages: 5, total_entries: 50}
+
+    header_keys =
+      paginated_headers(page, 80,
+        header_names: [
+          total: "total_items"
+        ]
+      )
+
+    refute is_nil(header_keys["total_items"])
+    assert is_nil(header_keys["total"])
+    refute is_nil(header_keys["link"])
+  end
+
   test "shows links build from x-forwarded headers" do
     page = %Page{page_number: 5, page_size: 10, total_pages: 5, total_entries: 50}
 

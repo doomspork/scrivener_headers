@@ -19,6 +19,14 @@ defmodule Scrivener.Headers do
 
   import Plug.Conn, only: [put_resp_header: 3, get_req_header: 2]
 
+  @default_header_keys %{
+    link: "link",
+    total: "total",
+    per_page: "per-page",
+    total_pages: "total-pages",
+    page_number: "page-number"
+  }
+
   @doc """
   Add HTTP headers for a `Scrivener.Page`.
   """
@@ -27,8 +35,9 @@ defmodule Scrivener.Headers do
 
   def paginate(conn, page, opts) do
     use_x_forwarded = Keyword.get(opts, :use_x_forwarded, false)
+    header_keys = generate_header_keys(opts)
     uri = generate_uri(conn, use_x_forwarded)
-    do_paginate(conn, page, uri)
+    do_paginate(conn, page, uri, header_keys)
   end
 
   defp generate_uri(conn, true) do
@@ -51,16 +60,22 @@ defmodule Scrivener.Headers do
     }
   end
 
-  defp do_paginate(conn, page, uri) do
+  defp do_paginate(conn, page, uri, header_keys) do
     conn
-    |> put_resp_header("link", build_link_header(uri, page))
-    |> put_resp_header("total", Integer.to_string(page.total_entries))
-    |> put_resp_header("per-page", Integer.to_string(page.page_size))
-    |> put_resp_header("total-pages", Integer.to_string(page.total_pages))
-    |> put_resp_header("page-number", Integer.to_string(page.page_number))
+    |> put_resp_header(header_keys.link, build_link_header(uri, page))
+    |> put_resp_header(header_keys.total, Integer.to_string(page.total_entries))
+    |> put_resp_header(header_keys.per_page, Integer.to_string(page.page_size))
+    |> put_resp_header(header_keys.total_pages, Integer.to_string(page.total_pages))
+    |> put_resp_header(header_keys.page_number, Integer.to_string(page.page_number))
   end
 
-  defp get_x_forwarded_or_conn(conn, conn_prop, header_name, parse_conn \\ & &1, parse_header \\ & &1) do
+  defp get_x_forwarded_or_conn(
+         conn,
+         conn_prop,
+         header_name,
+         parse_conn \\ & &1,
+         parse_header \\ & &1
+       ) do
     case get_req_header(conn, "x-forwarded-#{header_name}") do
       [] -> conn |> Map.get(conn_prop) |> parse_conn.()
       [value | _] -> parse_header.(value)
@@ -89,7 +104,8 @@ defmodule Scrivener.Headers do
     ~s(<#{uri_str}>; rel="#{rel}")
   end
 
-  defp maybe_add_prev(links, uri, page_number, total_pages) when 1 < page_number and page_number <= total_pages do
+  defp maybe_add_prev(links, uri, page_number, total_pages)
+       when 1 < page_number and page_number <= total_pages do
     [link_str(uri, page_number - 1, "prev") | links]
   end
 
@@ -97,11 +113,20 @@ defmodule Scrivener.Headers do
     links
   end
 
-  defp maybe_add_next(links, uri, page_number, total_pages) when 1 <= page_number and page_number < total_pages do
+  defp maybe_add_next(links, uri, page_number, total_pages)
+       when 1 <= page_number and page_number < total_pages do
     [link_str(uri, page_number + 1, "next") | links]
   end
 
   defp maybe_add_next(links, _uri, _page_number, _total_pages) do
     links
   end
+
+  defp generate_header_keys(header_names: header_names) do
+    custom_header_keys = Map.new(header_names)
+
+    Map.merge(@default_header_keys, custom_header_keys)
+  end
+
+  defp generate_header_keys(_), do: @default_header_keys
 end
