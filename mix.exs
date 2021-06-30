@@ -20,7 +20,7 @@ defmodule Scrivener.Headers.Mixfile do
     [maintainers: ["Sean Callan"],
      files: ["lib", "mix.exs", "README*", "LICENSE*"],
      licenses: ["MIT"],
-     links: %{github: "https://github.com/doomspork/scrivener_headers"}]
+     links: %{github: "https://github.com/beam-community/scrivener_headers"}]
   end
 
   def application do

@@ -2,8 +2,8 @@
 
 [![Build Status][travis-img]][travis] [![Hex Version][hex-img]][hex] [![Hex docs][hexdocs-img]][hexdocs] [![License][license-img]][license]
 
-[travis-img]: https://travis-ci.org/doomspork/scrivener_headers.png?branch=master
-[travis]: https://travis-ci.org/doomspork/scrivener_headers
+[travis-img]: https://travis-ci.org/beam-community/scrivener_headers.png?branch=master
+[travis]: https://travis-ci.org/beam-community/scrivener_headers
 [hex-img]: https://img.shields.io/hexpm/v/scrivener_headers.svg
 [hex]: https://hex.pm/packages/scrivener_headers
 [license-img]: http://img.shields.io/badge/license-MIT-brightgreen.svg
@@ -65,12 +65,12 @@ Contributions of all types are welcomed and encouraged.  Please
 make appropriate use of [Issues][issues] and [Pull Requests][pulls].  All code
 should have test coverage.
 
-[issues]: https://github.com/doomspork/scrivener_headers/issues
-[pulls]: https://github.com/doomspork/scrivener_headers/pulls
+[issues]: https://github.com/beam-community/scrivener_headers/issues
+[pulls]: https://github.com/beam-community/scrivener_headers/pulls
 
 
 ## License
 
 MIT license. Please see [LICENSE][license] for details.
 
-[LICENSE]: https://github.com/doomspork/scrivener_headers/blob/master/LICENSE
+[LICENSE]: https://github.com/beam-community/scrivener_headers/blob/master/LICENSE
