@@ -122,8 +122,8 @@ defmodule Scrivener.Headers do
     links
   end
 
-  defp generate_header_keys(header_names: header_names) do
-    custom_header_keys = Map.new(header_names)
+  defp generate_header_keys(header_keys: header_keys) do
+    custom_header_keys = Map.new(header_keys)
 
     Map.merge(@default_header_keys, custom_header_keys)
   end

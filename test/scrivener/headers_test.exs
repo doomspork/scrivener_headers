@@ -61,7 +61,7 @@ defmodule Scrivener.HeadersTests do
 
     header_keys =
       paginated_headers(page, 80,
-        header_names: [
+        header_keys: [
           total: "total_items",
           link: "link_url",
           per_page: "per_page",
@@ -81,7 +81,7 @@ defmodule Scrivener.HeadersTests do
 
     header_keys =
       paginated_headers(page, 80,
-        header_names: [
+        header_keys: [
           total: "total_items"
         ]
       )

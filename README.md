@@ -61,11 +61,11 @@ Per-Page: 10
 
 ### Using Custom Header Names
 
-Override any number of pagination header names by passing opts with a `header_names` keyword list like so:
+Override any number of pagination header names by passing opts with a `header_keys` keyword list like so:
 
 ```elixir
 Screenever.Headers.paginate(page,
-  header_names: [
+  header_keys: [
     total: "total",
     link: "link",
     per_page: "per-page",
